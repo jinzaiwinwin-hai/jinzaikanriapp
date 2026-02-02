@@ -1,18 +1,147 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 <head>
-  <meta charset="UTF-8">
-  <title>Hasegawa kokusaijinzai - Trang thử nghiệm</title>
-  <style>
-    body { font-family: Arial, sans-serif; padding: 20px; }
-    h1 { color: #2c3e50; }
-    p { color: #34495e; }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Quy Đổi Vàng GLD</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .gold-gradient { background: linear-gradient(135deg, #d4af37 0%, #f9e27d 50%, #d4af37 100%); }
+        .card { backdrop-filter: blur(10px); background-color: rgba(255, 255, 255, 0.9); }
+    </style>
 </head>
-<body>
-  <h1>Chào mừng đến JinzaikanriApp 👋</h1>
-  <p>Đây là trang thử nghiệm hiển thị từ GitHub Pages.</p>
-  <p>Hôm nay là 08 tháng 12 1:30 sáng </p>
-  <p>Chúc bạn thành công!</p>
+<body class="bg-gray-50 min-h-screen p-4 md:p-8">
+    <div class="max-w-4xl mx-auto">
+        <!-- Header -->
+        <header class="mb-8 text-center">
+            <h1 class="text-3xl font-bold text-gray-800 mb-2">Dashboard Quy Đổi Vàng GLD</h1>
+            <p class="text-gray-600">Dựa trên tỷ lệ sở hữu thực tế của quỹ SPDR Gold Shares (tháng 2/2026)</p>
+        </header>
+
+        <!-- Input Section -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+            <div class="card p-6 rounded-2xl shadow-sm border border-gray-200">
+                <label class="block text-sm font-semibold text-gray-700 mb-2">Giá 1 cổ phiếu GLD (Yên - JPY)</label>
+                <div class="relative">
+                    <input type="number" id="gldPrice" value="65794" 
+                        class="w-full pl-4 pr-12 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 transition-all outline-none text-lg font-medium"
+                        placeholder="Ví dụ: 65794">
+                    <span class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 font-bold">¥</span>
+                </div>
+                <p class="mt-2 text-xs text-gray-500 italic">*Nhập giá niêm yết trên sàn chứng khoán</p>
+            </div>
+
+            <div class="card p-6 rounded-2xl shadow-sm border border-gray-200">
+                <label class="block text-sm font-semibold text-gray-700 mb-2">Tỷ giá USD / JPY</label>
+                <div class="relative">
+                    <input type="number" id="exchangeRate" value="154.83" step="0.01"
+                        class="w-full pl-4 pr-16 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all outline-none text-lg font-medium"
+                        placeholder="Ví dụ: 154.83">
+                    <span class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 font-bold">¥/$</span>
+                </div>
+                <p class="mt-2 text-xs text-gray-500 italic">*Tỷ giá hối đoái thủ công</p>
+            </div>
+        </div>
+
+        <!-- Result Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <!-- 1 Gram Card -->
+            <div class="relative overflow-hidden group">
+                <div class="card p-6 rounded-2xl shadow-md border border-gray-100 h-full relative z-10 transition-transform hover:-translate-y-1">
+                    <h3 class="text-sm font-bold text-gray-500 uppercase tracking-wider mb-4">Giá 1 Gram Vàng</h3>
+                    <div class="text-3xl font-black text-gray-800" id="pricePerGram">--</div>
+                    <div class="text-sm font-medium text-gray-400 mt-1">Yên Nhật (JPY)</div>
+                </div>
+                <div class="absolute bottom-0 right-0 w-24 h-24 bg-yellow-100 rounded-full -mr-12 -mb-12 opacity-40 group-hover:scale-110 transition-transform"></div>
+            </div>
+
+            <!-- 1 Oz JPY Card -->
+            <div class="relative overflow-hidden group">
+                <div class="gold-gradient p-6 rounded-2xl shadow-lg h-full relative z-10 transition-transform hover:-translate-y-1">
+                    <h3 class="text-sm font-bold text-white/80 uppercase tracking-wider mb-4">Giá 1 Oz Vàng (JPY)</h3>
+                    <div class="text-3xl font-black text-white" id="pricePerOzJPY">--</div>
+                    <div class="text-sm font-medium text-white/70 mt-1">Yên Nhật (JPY)</div>
+                </div>
+            </div>
+
+            <!-- 1 Oz USD Card -->
+            <div class="relative overflow-hidden group">
+                <div class="bg-gray-800 p-6 rounded-2xl shadow-md h-full relative z-10 transition-transform hover:-translate-y-1">
+                    <h3 class="text-sm font-bold text-gray-400 uppercase tracking-wider mb-4">Giá 1 Oz Vàng (USD)</h3>
+                    <div class="text-3xl font-black text-white" id="pricePerOzUSD">--</div>
+                    <div class="text-sm font-medium text-gray-500 mt-1">Đô la Mỹ (USD)</div>
+                </div>
+                <div class="absolute top-0 right-0 w-24 h-24 bg-gray-700 rounded-full -tr-12 -mt-12 opacity-20 group-hover:scale-110 transition-transform"></div>
+            </div>
+        </div>
+
+        <!-- Factors & Footer -->
+        <div class="mt-12 p-6 bg-white rounded-2xl border border-gray-100 shadow-sm">
+            <h4 class="font-bold text-gray-800 mb-4 flex items-center">
+                <svg class="w-5 h-5 mr-2 text-yellow-600" fill="currentColor" viewBox="0 0 20 20"><path d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"></path></svg>
+                Thông số quy đổi được sử dụng
+            </h4>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
+                <div class="flex justify-between p-3 bg-gray-50 rounded-lg">
+                    <span class="text-gray-600">Tỷ lệ sở hữu GLD/Oz:</span>
+                    <span class="font-mono font-bold text-gray-800">0.091925</span>
+                </div>
+                <div class="flex justify-between p-3 bg-gray-50 rounded-lg">
+                    <span class="text-gray-600">Trọng lượng 1 Oz Troy:</span>
+                    <span class="font-mono font-bold text-gray-800">31.1035 gram</span>
+                </div>
+            </div>
+            <p class="mt-4 text-xs text-gray-400 leading-relaxed text-center">
+                Công thức: (Giá GLD / 0.091925) = Giá 1oz JPY | (Giá 1oz JPY / 31.1035) = Giá 1g JPY | (Giá 1oz JPY / Tỷ giá) = Giá 1oz USD.
+            </p>
+        </div>
+    </div>
+
+    <script>
+        const gldInput = document.getElementById('gldPrice');
+        const rateInput = document.getElementById('exchangeRate');
+        
+        const gramDisplay = document.getElementById('pricePerGram');
+        const ozJPYDisplay = document.getElementById('pricePerOzJPY');
+        const ozUSDDisplay = document.getElementById('pricePerOzUSD');
+
+        // Các hằng số quy đổi
+        const GLD_FACTOR = 0.091925;
+        const GRAM_PER_OZ = 31.1035;
+
+        function calculate() {
+            const gldPrice = parseFloat(gldInput.value) || 0;
+            const exchangeRate = parseFloat(rateInput.value) || 1;
+
+            if (gldPrice > 0) {
+                // 1. Tính giá 1 Oz theo Yên
+                const priceOzJPY = gldPrice / GLD_FACTOR;
+                
+                // 2. Tính giá 1 Gram theo Yên
+                const priceGramJPY = priceOzJPY / GRAM_PER_OZ;
+                
+                // 3. Tính giá 1 Oz theo USD
+                const priceOzUSD = priceOzJPY / exchangeRate;
+
+                // Cập nhật giao diện với định dạng số đẹp
+                gramDisplay.innerText = Math.round(priceGramJPY).toLocaleString('vi-VN') + " ¥";
+                ozJPYDisplay.innerText = Math.round(priceOzJPY).toLocaleString('vi-VN') + " ¥";
+                ozUSDDisplay.innerText = "$" + priceOzUSD.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            } else {
+                gramDisplay.innerText = "--";
+                ozJPYDisplay.innerText = "--";
+                ozUSDDisplay.innerText = "--";
+            }
+        }
+
+        // Lắng nghe sự kiện nhập liệu
+        gldInput.addEventListener('input', calculate);
+        rateInput.addEventListener('input', calculate);
+
+        // Chạy lần đầu tiên
+        calculate();
+    </script>
 </body>
 </html>
