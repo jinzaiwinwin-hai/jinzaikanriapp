@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Tài Chính: Tỷ Giá & Giá Vàng</title>
+    
+    <!-- Open Graph / Facebook Meta Tags -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Dashboard Tỷ Giá & Giá Vàng Tự Động">
+    <meta property="og:description" content="Cập nhật tỷ giá ngoại tệ và giá vàng thời gian thực.">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .text-gradient {
+            background: linear-gradient(to right, #1e293b, #334155);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 min-h-screen text-slate-900 pb-10">
+
+    <div class="max-w-xl mx-auto px-4 pt-8">
+        <!-- Header -->
+        <header class="flex justify-between items-center mb-6">
+            <div>
+                <h1 class="text-2xl font-extrabold text-slate-800 tracking-tight">Tài Chính Cá Nhân</h1>
+                <p class="text-sm text-slate-500 font-medium">Dữ liệu tự động cập nhật 24/7</p>
+            </div>
+            <div id="status-container" class="flex items-center gap-2 bg-white px-3 py-1.5 rounded-full shadow-sm border border-slate-100">
+                <div id="status-dot" class="h-2 w-2 rounded-full bg-slate-300"></div>
+                <span id="status-text" class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Khởi tạo</span>
+            </div>
+        </header>
+
+        <!-- PHẦN 1: TỶ GIÁ NGOẠI TỆ -->
+        <div class="mb-4 flex items-center gap-2 text-slate-500">
+            <i data-lucide="banknote" class="w-4 h-4"></i>
+            <h2 class="text-xs font-bold uppercase tracking-[0.2em]">Tỷ Giá Ngoại Tệ</h2>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+            <!-- USD/JPY -->
+            <div class="glass-card rounded-3xl p-5 shadow-sm border border-slate-100 flex flex-col gap-1">
+                <div class="flex justify-between items-start">
+                    <span class="text-[10px] font-bold text-amber-600 bg-amber-50 px-2 py-0.5 rounded-md">USD/JPY</span>
+                    <i data-lucide="arrow-up-right" class="w-3 h-3 text-slate-300"></i>
+                </div>
+                <h2 id="usd-jpy" class="text-2xl font-bold text-slate-800 mt-1">0.00</h2>
+                <p class="text-[10px] text-slate-400 font-semibold uppercase italic">Yên Nhật</p>
+            </div>
+
+            <!-- JPY/VND -->
+            <div class="glass-card rounded-3xl p-5 shadow-sm border border-slate-100 flex flex-col gap-1">
+                <div class="flex justify-between items-start">
+                    <span class="text-[10px] font-bold text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded-md">JPY/VND</span>
+                    <i data-lucide="arrow-up-right" class="w-3 h-3 text-slate-300"></i>
+                </div>
+                <h2 id="jpy-vnd" class="text-2xl font-bold text-slate-800 mt-1">0.00</h2>
+                <p class="text-[10px] text-slate-400 font-semibold uppercase italic">Việt Nam Đồng</p>
+            </div>
+        </div>
+
+        <!-- PHẦN 2: GIÁ VÀNG THẾ GIỚI (OUNCE) -->
+        <div class="mb-4 flex items-center gap-2 text-slate-500">
+            <i data-lucide="globe" class="w-4 h-4 text-blue-500"></i>
+            <h2 class="text-xs font-bold uppercase tracking-[0.2em]">Giá Vàng Thế Giới (1 Ounce)</h2>
+        </div>
+
+        <div class="glass-card rounded-3xl p-6 shadow-md border border-slate-100 mb-8 overflow-hidden relative">
+            <div class="absolute top-0 right-0 p-4 opacity-5">
+                <i data-lucide="globe" class="w-20 h-20"></i>
+            </div>
+            <div class="grid grid-cols-1 gap-4 relative z-10">
+                <div class="flex justify-between items-center border-b border-slate-100 pb-3">
+                    <span class="text-sm font-semibold text-slate-500 flex items-center gap-2">
+                        <i data-lucide="circle-dollar-sign" class="w-4 h-4"></i> Giá bằng USD
+                    </span>
+                    <span id="gold-ounce-usd" class="text-xl font-bold text-slate-800 tracking-tight">$0.00</span>
+                </div>
+                <div class="flex justify-between items-center border-b border-slate-100 pb-3">
+                    <span class="text-sm font-semibold text-slate-500 flex items-center gap-2">
+                        <i data-lucide="coins" class="w-4 h-4"></i> Giá bằng YEN
+                    </span>
+                    <span id="gold-ounce-jpy" class="text-xl font-bold text-slate-800 tracking-tight">¥0</span>
+                </div>
+                <div class="flex justify-between items-center">
+                    <span class="text-sm font-semibold text-slate-500 flex items-center gap-2">
+                        <i data-lucide="wallet-minimal" class="w-4 h-4"></i> Giá bằng VND
+                    </span>
+                    <span id="gold-ounce-vnd" class="text-xl font-bold text-blue-600 tracking-tight">0₫</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- PHẦN 3: GIÁ VÀNG ĐỊA PHƯƠNG -->
+        <div class="mb-4 flex items-center gap-2 text-slate-500">
+            <i data-lucide="sparkles" class="w-4 h-4 text-yellow-500"></i>
+            <h2 class="text-xs font-bold uppercase tracking-[0.2em]">Giá Vàng Quy Đổi (Tự Tính)</h2>
+        </div>
+
+        <div class="grid grid-cols-1 gap-4 mb-8">
+            <!-- SJC Vietnam -->
+            <div class="glass-card rounded-3xl p-6 shadow-md border-l-4 border-l-yellow-400 flex justify-between items-center group">
+                <div class="flex items-center gap-4">
+                    <div class="p-3 bg-yellow-50 rounded-2xl text-yellow-600">
+                        <i data-lucide="gem"></i>
+                    </div>
+                    <div>
+                        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest text-wrap">Vàng SJC / Lượng</p>
+                        <h2 id="gold-sjc" class="text-2xl font-bold text-slate-800 tracking-tight">---</h2>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tanaka Japan -->
+            <div class="glass-card rounded-3xl p-6 shadow-md border-l-4 border-l-orange-400 flex justify-between items-center group">
+                <div class="flex items-center gap-4">
+                    <div class="p-3 bg-orange-50 rounded-2xl text-orange-600">
+                        <i data-lucide="coins"></i>
+                    </div>
+                    <div>
+                        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest text-wrap">Vàng Nhật (Tanaka) / Gram</p>
+                        <h2 id="gold-tanaka" class="text-2xl font-bold text-slate-800 tracking-tight">---</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Calculator -->
+        <div class="glass-card rounded-3xl p-6 shadow-lg border border-slate-100 mb-8">
+            <h3 class="text-sm font-bold mb-4 flex items-center gap-2 text-slate-600 uppercase tracking-wider">
+                <i data-lucide="calculator" class="w-4 h-4"></i>
+                Tính toán nhanh
+            </h3>
+            <div class="space-y-4">
+                <div class="flex items-center gap-2">
+                    <input type="number" id="calc-input" value="1000" oninput="calculate()"
+                        class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-xl font-bold focus:outline-none focus:ring-2 focus:ring-blue-400 outline-none">
+                    <select id="calc-type" onchange="calculate()" class="bg-white border border-slate-200 rounded-2xl px-3 py-3 font-semibold text-slate-700 outline-none cursor-pointer">
+                        <option value="usd">USD</option>
+                        <option value="jpy">YEN</option>
+                    </select>
+                </div>
+                <div class="p-4 bg-slate-900 rounded-2xl shadow-inner">
+                    <p id="calc-result" class="text-blue-400 font-mono text-sm leading-relaxed tracking-tight">Đang tải dữ liệu...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Action & Footer -->
+        <div class="flex flex-col items-center gap-6">
+            <button onclick="fetchAllData()" id="refresh-btn" class="flex items-center gap-3 bg-slate-800 text-white px-12 py-4 rounded-2xl font-bold shadow-xl hover:bg-slate-900 transition-all active:scale-95 group">
+                <i data-lucide="rotate-cw" id="refresh-icon" class="w-5 h-5"></i>
+                Làm mới dữ liệu
+            </button>
+            <div class="text-center space-y-1">
+                <p class="text-[10px] text-slate-400 flex items-center justify-center gap-1 font-bold uppercase tracking-tighter">
+                    <i data-lucide="refresh-ccw" class="w-3 h-3"></i>
+                    Cập nhật lần cuối: <span id="last-updated">---</span>
+                </p>
+                <p class="text-[9px] text-slate-300 italic">Nguồn dữ liệu: GoldAPI.io & ExchangeRate-API</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="toast" class="fixed bottom-10 left-1/2 -translate-x-1/2 bg-slate-900 text-white px-6 py-3 rounded-full shadow-2xl text-sm font-medium opacity-0 transition-all duration-500 pointer-events-none translate-y-4">
+        Thông báo
+    </div>
+
+    <script>
+        // ============================================================
+        // CẤU HÌNH API KEY:
+        // ============================================================
+        
+        const exchangeApiKey = "9de6d3687f8e9e4c8bc0624b"; // Mã ExchangeRate-API
+        const goldApiKey     = "goldapi-b6fk2esml6fe98k-io"; // Mã GoldAPI.io bạn vừa cung cấp
+
+        // ============================================================
+
+        let state = {
+            usdjpy: 0,
+            usdvnd: 0,
+            jpyvnd: 0,
+            goldSpotUsd: 0 
+        };
+
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            toast.innerText = msg;
+            toast.classList.remove('opacity-0', 'translate-y-4');
+            toast.classList.add('opacity-100', 'translate-y-0');
+            setTimeout(() => {
+                toast.classList.add('opacity-0', 'translate-y-4');
+                toast.classList.remove('opacity-100', 'translate-y-0');
+            }, 5000);
+        }
+
+        function setStatus(mode, message = "") {
+            const dot = document.getElementById('status-dot');
+            const text = document.getElementById('status-text');
+            if(mode === 'loading') {
+                dot.className = "h-2 w-2 rounded-full bg-amber-400 animate-pulse";
+                text.innerText = "Đang tải";
+                text.className = "text-[10px] font-bold uppercase tracking-wider text-amber-500";
+            } else if(mode === 'success') {
+                dot.className = "h-2 w-2 rounded-full bg-green-500";
+                text.innerText = "Trực tuyến";
+                text.className = "text-[10px] font-bold uppercase tracking-wider text-green-600";
+            } else {
+                dot.className = "h-2 w-2 rounded-full bg-red-500";
+                text.innerText = message || "Lỗi API";
+                text.className = "text-[10px] font-bold uppercase tracking-wider text-red-500";
+            }
+        }
+
+        async function fetchAllData() {
+            const icon = document.getElementById('refresh-icon');
+            icon.classList.add('animate-spin');
+            setStatus('loading');
+
+            let hasError = false;
+
+            try {
+                // 1. Lấy tỷ giá ngoại tệ
+                const rateRes = await fetch(`https://v6.exchangerate-api.com/v6/${exchangeApiKey}/latest/USD`);
+                const rateData = await rateRes.json();
+
+                if (rateData.result === "success") {
+                    state.usdjpy = rateData.conversion_rates.JPY;
+                    state.usdvnd = rateData.conversion_rates.VND;
+                    state.jpyvnd = state.usdvnd / state.usdjpy;
+
+                    document.getElementById('usd-jpy').innerText = state.usdjpy.toLocaleString('en-US', {minimumFractionDigits: 2});
+                    document.getElementById('jpy-vnd').innerText = state.jpyvnd.toLocaleString('en-US', {minimumFractionDigits: 2});
+                } else {
+                    showToast("Lỗi Tỷ Giá: Kiểm tra Key tại dòng exchangeApiKey!");
+                    hasError = true;
+                }
+
+                // 2. Lấy giá vàng thực tế từ GoldAPI.io
+                const myHeaders = new Headers();
+                myHeaders.append("x-access-token", goldApiKey);
+                myHeaders.append("Content-Type", "application/json");
+
+                const goldRes = await fetch("https://www.goldapi.io/api/XAU/USD", {
+                    method: 'GET',
+                    headers: myHeaders,
+                    redirect: 'follow'
+                });
+                
+                if (goldRes.status === 200) {
+                    const goldData = await goldRes.json();
+                    if (goldData.price) {
+                        state.goldSpotUsd = goldData.price;
+                    }
+                } else {
+                    showToast("Lỗi Giá Vàng: Kiểm tra Key tại dòng goldApiKey!");
+                    hasError = true;
+                    if(state.goldSpotUsd === 0) state.goldSpotUsd = 2050.00;
+                }
+
+                // 3. Hiển thị Giá Vàng Thế Giới (1 Ounce)
+                const ounceUsd = state.goldSpotUsd;
+                const ounceJpy = state.goldSpotUsd * state.usdjpy;
+                const ounceVnd = state.goldSpotUsd * state.usdvnd;
+
+                document.getElementById('gold-ounce-usd').innerText = `$${ounceUsd.toLocaleString('en-US', {minimumFractionDigits: 2})}`;
+                document.getElementById('gold-ounce-jpy').innerText = `¥${Math.round(ounceJpy).toLocaleString('ja-JP')}`;
+                document.getElementById('gold-ounce-vnd').innerText = `${Math.round(ounceVnd).toLocaleString('vi-VN')}₫`;
+
+                // 4. Tính toán giá vàng quy đổi
+                const sjcPrice = ((state.goldSpotUsd / 31.1035) * 37.5 * state.usdvnd) + 16000000;
+                const tanakaPrice = ((state.goldSpotUsd / 31.1035) * state.usdjpy) * 1.1;
+
+                document.getElementById('gold-sjc').innerText = sjcPrice.toLocaleString('vi-VN', {maximumFractionDigits: 0});
+                document.getElementById('gold-tanaka').innerText = tanakaPrice.toLocaleString('ja-JP', {maximumFractionDigits: 0});
+
+                document.getElementById('last-updated').innerText = new Date().toLocaleTimeString('vi-VN');
+                calculate();
+                
+                if(!hasError) setStatus('success');
+                else setStatus('error', 'Lỗi API Key');
+
+            } catch (error) {
+                console.error(error);
+                showToast("Không thể kết nối. Kiểm tra Internet hoặc API Key!");
+                setStatus('error', 'Mất kết nối');
+            } finally {
+                icon.classList.remove('animate-spin');
+            }
+        }
+
+        function calculate() {
+            const input = parseFloat(document.getElementById('calc-input').value) || 0;
+            const type = document.getElementById('calc-type').value;
+            const resultEl = document.getElementById('calc-result');
+
+            if (state.usdjpy === 0) return;
+
+            if (type === 'usd') {
+                const jpy = input * state.usdjpy;
+                const vnd = input * state.usdvnd;
+                resultEl.innerHTML = `> ${jpy.toLocaleString('ja-JP')} YEN<br>> ${vnd.toLocaleString('vi-VN')} VND`;
+            } else {
+                const vnd = input * state.jpyvnd;
+                const usd = input / state.usdjpy;
+                resultEl.innerHTML = `> ${vnd.toLocaleString('vi-VN')} VND<br>> ${usd.toLocaleString('en-US', {minimumFractionDigits: 2})} USD`;
+            }
+        }
+
+        lucide.createIcons();
+        window.onload = fetchAllData;
+        setInterval(fetchAllData, 600000); 
+    </script>
+</body>
+</html>
